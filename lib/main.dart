@@ -270,6 +270,11 @@ class MyApp extends StatelessWidget {
               useExpressiveOnContainerColors: false,
             ),
         isDynamic: lightColorScheme != null,
+      ).copyWith(
+        // ===== 添加字体配置 (亮色主题) =====
+        fontFamily: 'Noto Sans CJK SC',
+        fontFamilyFallback: ['Noto Color Emoji'],
+        // ===== 字体配置结束 =====
       ),
       darkTheme: ThemeUtils.getThemeData(
         isDark: true,
@@ -282,6 +287,11 @@ class MyApp extends StatelessWidget {
               useExpressiveOnContainerColors: false,
             ),
         isDynamic: darkColorScheme != null,
+      ).copyWith(
+        // ===== 添加字体配置 (深色主题) =====
+        fontFamily: 'Noto Sans CJK SC',
+        fontFamilyFallback: ['Noto Color Emoji'],
+        // ===== 字体配置结束 =====
       ),
       themeMode: Pref.themeMode,
       localizationsDelegates: const [
