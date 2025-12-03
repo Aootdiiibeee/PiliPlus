@@ -14,6 +14,21 @@ struct _MyApplication {
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 
+// ===== 新增：窗口状态改变事件回调函数 =====
+static gboolean on_window_state_event(GtkWidget* widget, GdkEventWindowState* event, gpointer user_data) {
+  GtkWindow* window = GTK_WINDOW(widget);
+  
+  // 检查窗口新的状态是否包含“最大化” (GDK_WINDOW_STATE_MAXIMIZED)
+  gboolean is_maximized = (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) != 0;
+  
+  // 动态设置窗口装饰：最大化时隐藏，非最大化时显示
+  gtk_window_set_decorated(window, !is_maximized);
+  
+  // 让事件继续传递
+  return FALSE;
+}
+// ===== 新增部分结束 =====
+
 // Called when first Flutter frame received.
 static void first_frame_cb(MyApplication* self, FlView *view)
 {
@@ -53,6 +68,16 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "piliplus");
   }
 
+  // ===== 关键修改开始 =====
+  // 1. 连接窗口状态改变信号，以响应后续用户的手动最大化/还原操作
+  g_signal_connect(window, "window-state-event", G_CALLBACK(on_window_state_event), NULL);
+  
+  // 2. 注意：这里我们不能直接判断状态，因为Dart端的最大化设置稍后才生效。
+  // 我们暂时将窗口装饰设置为TRUE（显示），等待Flutter端调用maximize()后，
+  // 会触发`window-state-event`信号，上面的回调函数会将其设置为FALSE（隐藏）。
+  // 这是一种“后置”响应策略，以确保与现有窗口显示流程兼容。
+  // ===== 关键修改结束 =====
+
   gtk_window_set_default_size(window, 1280, 720);
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
@@ -76,6 +101,7 @@ static void my_application_activate(GApplication* application) {
   gtk_widget_grab_focus(GTK_WIDGET(view));
 }
 
+// ... (文件其余部分与您提供的完全一致，无需任何改动) ...
 // Implements GApplication::local_command_line.
 static gboolean my_application_local_command_line(GApplication* application, gchar*** arguments, int* exit_status) {
   MyApplication* self = MY_APPLICATION(application);
