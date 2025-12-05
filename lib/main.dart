@@ -225,22 +225,18 @@ class MyApp extends StatelessWidget {
       fontFamilyFallback: ['Noto Color Emoji'],
     );
     
+    // 为 primaryTextTheme 设置字体（如果存在）
+    final updatedPrimaryTextTheme = themeData.primaryTextTheme?.apply(
+      fontFamily: 'Noto Sans CJK SC',
+      fontFamilyFallback: ['Noto Color Emoji'],
+    );
+    
     return themeData.copyWith(
       // 主要文本主题
       textTheme: updatedTextTheme,
       
-      // 一些组件可能会使用 primaryTextTheme（特别是旧版 Material）
-      primaryTextTheme: updatedTextTheme,
-      
-      // 添加字体到特定组件
-      primaryTextTheme: themeData.primaryTextTheme?.apply(
-        fontFamily: 'Noto Sans CJK SC',
-        fontFamilyFallback: ['Noto Color Emoji'],
-      ),
-      
-      // Material 3 的辅助文本主题（如果存在）
-      // 注意：在某些Flutter版本中可能没有这些属性
-      // 所以使用安全的空检查
+      // 主要文本主题（用于AppBar、对话框等）
+      primaryTextTheme: updatedPrimaryTextTheme ?? updatedTextTheme,
     );
   }
 
