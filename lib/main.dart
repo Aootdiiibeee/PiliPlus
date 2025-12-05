@@ -219,19 +219,15 @@ class MyApp extends StatelessWidget {
 
   // 辅助方法：为ThemeData添加字体配置
   static ThemeData _themeDataWithFonts(ThemeData themeData) {
+    // 为所有文本样式设置字体
+    final updatedTextTheme = themeData.textTheme.apply(
+      fontFamily: 'Noto Sans CJK SC',
+      fontFamilyFallback: ['Noto Color Emoji'],
+    );
+    
+    // 更新主题数据的文本主题
     return themeData.copyWith(
-      textTheme: themeData.textTheme.apply(
-        fontFamily: 'Noto Sans CJK SC',
-        fontFamilyFallback: ['Noto Color Emoji'],
-      ),
-      primaryTextTheme: themeData.primaryTextTheme.apply(
-        fontFamily: 'Noto Sans CJK SC',
-        fontFamilyFallback: ['Noto Color Emoji'],
-      ),
-      secondaryTextTheme: themeData.secondaryTextTheme.apply(
-        fontFamily: 'Noto Sans CJK SC',
-        fontFamilyFallback: ['Noto Color Emoji'],
-      ),
+      textTheme: updatedTextTheme,
     );
   }
 
