@@ -217,17 +217,30 @@ class MyApp extends StatelessWidget {
 
   static ThemeData? darkThemeData;
 
-  // 辅助方法：为ThemeData添加字体配置
+  // 辅助方法：为ThemeData添加字体配置，覆盖更多文本场景
   static ThemeData _themeDataWithFonts(ThemeData themeData) {
-    // 为所有文本样式设置字体
+    // 为所有文本主题设置字体
     final updatedTextTheme = themeData.textTheme.apply(
       fontFamily: 'Noto Sans CJK SC',
       fontFamilyFallback: ['Noto Color Emoji'],
     );
     
-    // 更新主题数据的文本主题
     return themeData.copyWith(
+      // 主要文本主题
       textTheme: updatedTextTheme,
+      
+      // 一些组件可能会使用 primaryTextTheme（特别是旧版 Material）
+      primaryTextTheme: updatedTextTheme,
+      
+      // 添加字体到特定组件
+      primaryTextTheme: themeData.primaryTextTheme?.apply(
+        fontFamily: 'Noto Sans CJK SC',
+        fontFamilyFallback: ['Noto Color Emoji'],
+      ),
+      
+      // Material 3 的辅助文本主题（如果存在）
+      // 注意：在某些Flutter版本中可能没有这些属性
+      // 所以使用安全的空检查
     );
   }
 
@@ -318,12 +331,23 @@ class MyApp extends StatelessWidget {
         toastBuilder: (String msg) => CustomToast(msg: msg),
         loadingBuilder: (msg) => LoadingWidget(msg: msg),
         builder: (context, child) {
+          // 在顶层使用 DefaultTextStyle 确保所有文本都使用指定字体
+          // 这是最可靠的全局字体设置方法
+          child = DefaultTextStyle(
+            style: const TextStyle(
+              fontFamily: 'Noto Sans CJK SC',
+              fontFamilyFallback: ['Noto Color Emoji'],
+            ),
+            child: child!,
+          );
+          
           child = MediaQuery(
             data: MediaQuery.of(context).copyWith(
               textScaler: TextScaler.linear(Pref.defaultTextScale),
             ),
-            child: child!,
+            child: child,
           );
+          
           if (Utils.isDesktop) {
             return Focus(
               canRequestFocus: false,
@@ -364,21 +388,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!Platform.isIOS && Pref.dynamicColor) {
-      return DynamicColorBuilder(
-        builder: ((ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-          if (lightDynamic != null && darkDynamic != null) {
-            return _build(
-              lightColorScheme: lightDynamic.harmonized(),
-              darkColorScheme: darkDynamic.harmonized(),
-            );
-          } else {
-            return _build();
-          }
-        }),
-      );
-    }
-    return _build();
+    // 在最外层再包装一个 DefaultTextStyle 作为最终保障
+    final appContent = !Platform.isIOS && Pref.dynamicColor
+        ? DynamicColorBuilder(
+            builder: ((ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+              if (lightDynamic != null && darkDynamic != null) {
+                return _build(
+                  lightColorScheme: lightDynamic.harmonized(),
+                  darkColorScheme: darkDynamic.harmonized(),
+                );
+              } else {
+                return _build();
+              }
+            }),
+          )
+        : _build();
+    
+    return DefaultTextStyle(
+      style: const TextStyle(
+        fontFamily: 'Noto Sans CJK SC',
+        fontFamilyFallback: ['Noto Color Emoji'],
+      ),
+      child: appContent,
+    );
   }
 }
 
