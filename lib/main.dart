@@ -217,138 +217,6 @@ class MyApp extends StatelessWidget {
 
   static ThemeData? darkThemeData;
 
-  // 辅助方法：为ThemeData添加字体配置，覆盖所有文本场景
-  static ThemeData _themeDataWithFonts(ThemeData themeData) {
-    // 创建应用了字体的TextTheme
-    final textThemeWithFont = themeData.textTheme.apply(
-      fontFamily: 'Noto Sans CJK SC',
-      fontFamilyFallback: ['Noto Color Emoji'],
-    );
-    
-    // 应用字体到所有可能的文本场景
-    return themeData.copyWith(
-      // 主要的文本主题
-      textTheme: textThemeWithFont,
-      
-      // Material 3 的文本主题（如果有）
-      primaryTextTheme: textThemeWithFont,
-      
-      // 为特定组件应用字体
-      dialogTheme: themeData.dialogTheme.copyWith(
-        titleTextStyle: themeData.dialogTheme.titleTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        contentTextStyle: themeData.dialogTheme.contentTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-      ),
-      
-      snackBarTheme: themeData.snackBarTheme.copyWith(
-        contentTextStyle: themeData.snackBarTheme.contentTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        actionTextStyle: themeData.snackBarTheme.actionTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-      ),
-      
-      chipTheme: themeData.chipTheme.copyWith(
-        labelStyle: themeData.chipTheme.labelStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        secondaryLabelStyle: themeData.chipTheme.secondaryLabelStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-      ),
-      
-      inputDecorationTheme: themeData.inputDecorationTheme.copyWith(
-        labelStyle: themeData.inputDecorationTheme.labelStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        hintStyle: themeData.inputDecorationTheme.hintStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        helperStyle: themeData.inputDecorationTheme.helperStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        errorStyle: themeData.inputDecorationTheme.errorStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-      ),
-      
-      tabBarTheme: themeData.tabBarTheme.copyWith(
-        labelStyle: themeData.tabBarTheme.labelStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        unselectedLabelStyle: themeData.tabBarTheme.unselectedLabelStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-      ),
-      
-      appBarTheme: themeData.appBarTheme.copyWith(
-        titleTextStyle: themeData.appBarTheme.titleTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        toolbarTextStyle: themeData.appBarTheme.toolbarTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-      ),
-      
-      buttonTheme: themeData.buttonTheme.copyWith(
-        textTheme: themeData.buttonTheme.textTheme,
-      ),
-      
-      // 确保所有按钮类型都使用字体
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          textStyle: TextStyle(
-            fontFamily: 'Noto Sans CJK SC',
-            fontFamilyFallback: ['Noto Color Emoji'],
-          ),
-        ),
-      ),
-      
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          textStyle: TextStyle(
-            fontFamily: 'Noto Sans CJK SC',
-            fontFamilyFallback: ['Noto Color Emoji'],
-          ),
-        ),
-      ),
-      
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          textStyle: TextStyle(
-            fontFamily: 'Noto Sans CJK SC',
-            fontFamilyFallback: ['Noto Color Emoji'],
-          ),
-        ),
-      ),
-      
-      floatingActionButtonTheme: themeData.floatingActionButtonTheme.copyWith(
-        extendedTextStyle: themeData.floatingActionButtonTheme.extendedTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-      ),
-    );
-  }
-
   static void _onBack() {
     if (SmartDialog.checkExist()) {
       SmartDialog.dismiss();
@@ -390,37 +258,31 @@ class MyApp extends StatelessWidget {
   }) {
     late final brandColor = colorThemeTypes[Pref.customColor].color;
     late final variant = FlexSchemeVariant.values[Pref.schemeVariant];
-    
-    // 获取基础主题数据
-    final lightTheme = ThemeUtils.getThemeData(
-      colorScheme:
-          lightColorScheme ??
-          SeedColorScheme.fromSeeds(
-            variant: variant,
-            primaryKey: brandColor,
-            brightness: Brightness.light,
-            useExpressiveOnContainerColors: false,
-          ),
-      isDynamic: lightColorScheme != null,
-    );
-    
-    final darkTheme = ThemeUtils.getThemeData(
-      isDark: true,
-      colorScheme:
-          darkColorScheme ??
-          SeedColorScheme.fromSeeds(
-            variant: variant,
-            primaryKey: brandColor,
-            brightness: Brightness.dark,
-            useExpressiveOnContainerColors: false,
-          ),
-      isDynamic: darkColorScheme != null,
-    );
-    
     return GetMaterialApp(
       title: Constants.appName,
-      theme: _themeDataWithFonts(lightTheme),  // 应用字体
-      darkTheme: _themeDataWithFonts(darkTheme),  // 应用字体
+      theme: ThemeUtils.getThemeData(
+        colorScheme:
+            lightColorScheme ??
+            SeedColorScheme.fromSeeds(
+              variant: variant,
+              primaryKey: brandColor,
+              brightness: Brightness.light,
+              useExpressiveOnContainerColors: false,
+            ),
+        isDynamic: lightColorScheme != null,
+      ),
+      darkTheme: ThemeUtils.getThemeData(
+        isDark: true,
+        colorScheme:
+            darkColorScheme ??
+            SeedColorScheme.fromSeeds(
+              variant: variant,
+              primaryKey: brandColor,
+              brightness: Brightness.dark,
+              useExpressiveOnContainerColors: false,
+            ),
+        isDynamic: darkColorScheme != null,
+      ),
       themeMode: Pref.themeMode,
       localizationsDelegates: const [
         GlobalCupertinoLocalizations.delegate,
@@ -436,7 +298,7 @@ class MyApp extends StatelessWidget {
         toastBuilder: (String msg) => CustomToast(msg: msg),
         loadingBuilder: (msg) => LoadingWidget(msg: msg),
         builder: (context, child) {
-          // 在顶层包装 DefaultTextStyle 确保所有文本都使用指定字体
+          // 在顶层包装 DefaultTextStyle 来设置全局字体
           child = DefaultTextStyle(
             style: const TextStyle(
               fontFamily: 'Noto Sans CJK SC',
@@ -490,7 +352,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 在最外层包装 DefaultTextStyle 作为最后保障
+    // 在最外层再包装一个 DefaultTextStyle 作为额外保障
     final appContent = !Platform.isIOS && Pref.dynamicColor
         ? DynamicColorBuilder(
             builder: ((ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
