@@ -217,6 +217,40 @@ class MyApp extends StatelessWidget {
 
   static ThemeData? darkThemeData;
 
+  // 辅助方法：为ThemeData添加字体配置
+  static ThemeData _themeDataWithFonts(ThemeData themeData) {
+    return themeData.copyWith(
+      textTheme: themeData.textTheme.apply(
+        fontFamily: 'Noto Sans CJK SC',
+        fontFamilyFallback: ['Noto Color Emoji'],
+      ),
+      primaryTextTheme: themeData.primaryTextTheme.apply(
+        fontFamily: 'Noto Sans CJK SC',
+        fontFamilyFallback: ['Noto Color Emoji'],
+      ),
+      secondaryTextTheme: themeData.secondaryTextTheme.apply(
+        fontFamily: 'Noto Sans CJK SC',
+        fontFamilyFallback: ['Noto Color Emoji'],
+      ),
+      // 如果需要，也可以设置其他主题文本样式
+      actionTextTheme: themeData.actionTextTheme?.apply(
+        fontFamily: 'Noto Sans CJK SC',
+        fontFamilyFallback: ['Noto Color Emoji'],
+      ),
+      // 设置对话框等组件的默认文本样式
+      dialogTheme: themeData.dialogTheme.copyWith(
+        titleTextStyle: themeData.dialogTheme.titleTextStyle?.copyWith(
+          fontFamily: 'Noto Sans CJK SC',
+          fontFamilyFallback: ['Noto Color Emoji'],
+        ),
+        contentTextStyle: themeData.dialogTheme.contentTextStyle?.copyWith(
+          fontFamily: 'Noto Sans CJK SC',
+          fontFamilyFallback: ['Noto Color Emoji'],
+        ),
+      ),
+    );
+  }
+
   static void _onBack() {
     if (SmartDialog.checkExist()) {
       SmartDialog.dismiss();
@@ -258,41 +292,37 @@ class MyApp extends StatelessWidget {
   }) {
     late final brandColor = colorThemeTypes[Pref.customColor].color;
     late final variant = FlexSchemeVariant.values[Pref.schemeVariant];
+    
+    // 获取基础主题数据
+    final lightTheme = ThemeUtils.getThemeData(
+      colorScheme:
+          lightColorScheme ??
+          SeedColorScheme.fromSeeds(
+            variant: variant,
+            primaryKey: brandColor,
+            brightness: Brightness.light,
+            useExpressiveOnContainerColors: false,
+          ),
+      isDynamic: lightColorScheme != null,
+    );
+    
+    final darkTheme = ThemeUtils.getThemeData(
+      isDark: true,
+      colorScheme:
+          darkColorScheme ??
+          SeedColorScheme.fromSeeds(
+            variant: variant,
+            primaryKey: brandColor,
+            brightness: Brightness.dark,
+            useExpressiveOnContainerColors: false,
+          ),
+      isDynamic: darkColorScheme != null,
+    );
+    
     return GetMaterialApp(
       title: Constants.appName,
-      theme: ThemeUtils.getThemeData(
-        colorScheme:
-            lightColorScheme ??
-            SeedColorScheme.fromSeeds(
-              variant: variant,
-              primaryKey: brandColor,
-              brightness: Brightness.light,
-              useExpressiveOnContainerColors: false,
-            ),
-        isDynamic: lightColorScheme != null,
-      ).copyWith(
-        // ===== 添加字体配置 (亮色主题) =====
-        fontFamily: 'Noto Sans CJK SC',
-        fontFamilyFallback: ['Noto Color Emoji'],
-        // ===== 字体配置结束 =====
-      ),
-      darkTheme: ThemeUtils.getThemeData(
-        isDark: true,
-        colorScheme:
-            darkColorScheme ??
-            SeedColorScheme.fromSeeds(
-              variant: variant,
-              primaryKey: brandColor,
-              brightness: Brightness.dark,
-              useExpressiveOnContainerColors: false,
-            ),
-        isDynamic: darkColorScheme != null,
-      ).copyWith(
-        // ===== 添加字体配置 (深色主题) =====
-        fontFamily: 'Noto Sans CJK SC',
-        fontFamilyFallback: ['Noto Color Emoji'],
-        // ===== 字体配置结束 =====
-      ),
+      theme: _themeDataWithFonts(lightTheme),
+      darkTheme: _themeDataWithFonts(darkTheme),
       themeMode: Pref.themeMode,
       localizationsDelegates: const [
         GlobalCupertinoLocalizations.delegate,
