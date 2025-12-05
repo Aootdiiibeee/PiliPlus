@@ -232,22 +232,6 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Noto Sans CJK SC',
         fontFamilyFallback: ['Noto Color Emoji'],
       ),
-      // 如果需要，也可以设置其他主题文本样式
-      actionTextTheme: themeData.actionTextTheme?.apply(
-        fontFamily: 'Noto Sans CJK SC',
-        fontFamilyFallback: ['Noto Color Emoji'],
-      ),
-      // 设置对话框等组件的默认文本样式
-      dialogTheme: themeData.dialogTheme.copyWith(
-        titleTextStyle: themeData.dialogTheme.titleTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-        contentTextStyle: themeData.dialogTheme.contentTextStyle?.copyWith(
-          fontFamily: 'Noto Sans CJK SC',
-          fontFamilyFallback: ['Noto Color Emoji'],
-        ),
-      ),
     );
   }
 
@@ -321,8 +305,8 @@ class MyApp extends StatelessWidget {
     
     return GetMaterialApp(
       title: Constants.appName,
-      theme: _themeDataWithFonts(lightTheme),
-      darkTheme: _themeDataWithFonts(darkTheme),
+      theme: _themeDataWithFonts(lightTheme),  // 应用字体
+      darkTheme: _themeDataWithFonts(darkTheme),  // 应用字体
       themeMode: Pref.themeMode,
       localizationsDelegates: const [
         GlobalCupertinoLocalizations.delegate,
